@@ -1,0 +1,209 @@
+#include <iostream>
+using namespace std;
+
+//Domeniul ales este Nascar(curse).Initialele sunt N(Neacsu), S(Stefan). Contine clasele: Masina, Echipa, Pilot.
+
+class Masina {
+public:
+
+	//atribut constant
+	const int anFabricatie;
+	//atribute normale
+	string numeMasina;
+	int caiPutere;
+	int nrUsi;
+	//atribut static
+	static int numarRoti;
+	//atribut de tip pointer
+	char* marcaMasina;
+
+	//constructor1 - fara parametrii
+	Masina() : anFabricatie(2008) {
+		this->numeMasina = "Spark";
+		this->caiPutere = 90;
+		this->nrUsi = 4;
+		this->marcaMasina = new char[strlen("Chevrolet") + 1];
+		strcpy_s(this->marcaMasina, strlen("Chevrolet") + 1, "Chevrolet");
+	}
+
+	//constructor2 - cu 4 parametrii
+	Masina(string numeMasinanou, int caiPutereNoi, int anFabricatienou, int nrUsinou): anFabricatie(anFabricatienou), numeMasina(numeMasinanou),caiPutere(caiPutereNoi),nrUsi(nrUsinou)
+	{
+		this->marcaMasina = new char[strlen("Koenigsegg") + 1];
+		strcpy_s(this->marcaMasina, strlen("Koenigsegg") + 1, "Koenigsegg");
+	}
+
+	//constructor3 - cu 3 parametrii
+	Masina(char* marcaMasinaNoua, string numeMasinaNou, const int anFabricatieNou) : numeMasina(numeMasinaNou), anFabricatie(anFabricatieNou)
+	{
+		this->marcaMasina = new char[strlen(marcaMasinaNoua) + 1];
+		strcpy_s(this->marcaMasina, strlen(marcaMasinaNoua) + 1, marcaMasinaNoua);
+
+	}
+
+	//deconstructor
+	~Masina() {
+		if (marcaMasina != NULL)
+			delete[]this->marcaMasina;
+	}
+
+	void afisare()
+	{
+		
+			cout << "\nAn fabricatie: " << anFabricatie << endl << "Nume masina: " << numeMasina << endl << "Cai putere: " << caiPutere << endl << "Marca masina: " << marcaMasina << endl<<"Numar usi:"<<nrUsi<<endl;
+		
+	}
+
+	static void afisareNumarRoti() {
+		cout << "\nNumar roti:" << numarRoti<<endl;
+	}
+};
+
+int Masina::numarRoti = 4;
+
+
+class Pilot {
+public:
+
+	string nume;
+	const string tara;
+	int nrCastiguri;
+	static int varsta;
+	int* aniExperienta;
+
+	Pilot() :tara("Romania")
+	{
+		this->nume = "Stefan";
+		this->nrCastiguri = 10;
+		this->aniExperienta = new int;
+		*aniExperienta = 5;
+	}
+
+	Pilot(string numeNou, const string taraNoua, int nrCastiguriNou) :nume(numeNou), tara(taraNoua), nrCastiguri(nrCastiguriNou)
+	{
+		this->aniExperienta = new int;
+		*aniExperienta = 8;
+	}
+
+	Pilot(string numeNou, const string taraNoua) :tara(taraNoua), nume(numeNou)
+	{ 
+		this->aniExperienta = new int;
+		*aniExperienta = 20;
+	}
+
+	~Pilot()
+	{  
+		if(aniExperienta!=NULL)
+		delete[]this->aniExperienta;
+	}
+
+	void afisare()
+	{
+		cout << "\nPilotul cu numele " << nume << " reprezinta " << tara << " si in doar " << *aniExperienta << " ani de experienta a castigat de " << nrCastiguri<<" ori." << endl;
+	}
+
+	static void eligibilitate() {
+		if (varsta >= 18)
+			cout << "Soferul este eligibil pentru a conduce o masina de curse.\n";
+		else cout<< "Soferul nu este eligibil pentru a conduce o masina de curse.\n";
+	}
+
+};
+
+int Pilot::varsta = 21;
+
+
+class Echipa {
+public:
+
+	string numeEchipa;
+	int numarMembri;
+	int numarSponsori;
+	float* valoareEchipa;
+	const string locatieSediu;
+	static int numarEchipe;
+
+	Echipa() :numeEchipa("Redbull"), numarMembri(2), numarSponsori(20),locatieSediu("Germania")
+	{
+		this->valoareEchipa = new float;
+		*valoareEchipa = 960.7;
+	}
+
+	Echipa(string numeEchipaNou,int numarMembriNou, int numarSponsoriNou, float valoareEchipaNoua)
+		: numeEchipa(numeEchipaNou), numarMembri(numarMembriNou), numarSponsori(numarSponsoriNou), locatieSediu("Germania") {
+		this->valoareEchipa = new float;
+		*valoareEchipa = valoareEchipaNoua;
+	}
+
+	Echipa(string numeEchipaNou):numeEchipa(numeEchipaNou)
+	{
+		this->numarSponsori = 120;
+		this->valoareEchipa = new float;
+		*valoareEchipa = 450.32;
+
+	}
+
+	~Echipa()
+	{
+		if (valoareEchipa != NULL)
+			delete[]this->valoareEchipa;
+	}
+
+	void afisare() {
+
+		cout << "\nNume echipa:" << numeEchipa << endl << "Numar membrii:" << numarMembri << endl << "Numar sponsori:" << numarSponsori << endl << "Valoare echipa(milioane):" << *valoareEchipa << endl << "Locatie sediu:" << locatieSediu<<endl;
+
+	}
+
+	static void afisareNumarEchipe() {
+		cout << "Numarul total de echipe: " << numarEchipe << endl;
+	}
+
+};
+
+int Echipa::numarEchipe = 12;
+
+
+void main()
+{//apelarea clasei 1
+	Masina masina1;
+	masina1.afisare();
+
+	Masina masina2("Jesko",1280,2022,2);
+	masina2.afisare();
+
+	char* marcaMasina = new char[strlen("Ford") + 1];
+	strcpy_s(marcaMasina, strlen("Ford") + 1, "Ford");
+	Masina masina3(marcaMasina, "Mustang", 2023);
+	masina3.afisare();
+
+	Masina::afisareNumarRoti();
+
+	//apelarea clasei 2
+
+	Pilot pilot1;
+	pilot1.afisare();
+
+	Pilot pilot2("Max Verstappen","Olanda",49);
+	pilot2.afisare();
+
+	Pilot pilot3("Alonsso","Franta");
+	pilot3.afisare();
+
+	Pilot::eligibilitate();
+
+	//apelarea clasei 3
+
+	Echipa echipa1;
+	echipa1.afisare();
+
+	Echipa echipa2("Mercedes", 3, 35, 200.2);
+	echipa2.afisare();
+
+	Echipa echipa3("Ferari");
+	echipa3.afisare();
+
+	Echipa::afisareNumarEchipe();
+
+
+}
