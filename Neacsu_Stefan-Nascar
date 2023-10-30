@@ -3,21 +3,67 @@ using namespace std;
 
 //Domeniul ales este Nascar(curse).Initialele sunt N(Neacsu), S(Stefan). Contine clasele: Masina, Echipa, Pilot.
 
-class Masina {
-public:
 
-	//atribut constant
-	const int anFabricatie;
-	//atribute normale
-	string numeMasina;
+
+class Masina {
+private:
+	const int anFabricatie; 
+	string numeMasina;   
 	int caiPutere;
 	int nrUsi;
-	//atribut static
-	static int numarRoti;
-	//atribut de tip pointer
+	static int numarRoti;  
 	char* marcaMasina;
 
-	//constructor1 - fara parametrii
+public:
+
+	const int getAnFabricatie() {
+		return this->anFabricatie;
+	}
+
+	string getNumeMasina() {
+		return this->numeMasina;
+	}
+
+	int  getCaiPutere() {
+		return this->caiPutere;
+	}
+
+	int getNrUsi() {
+		return this->nrUsi;
+	}
+
+	static int getNumarRoti()
+	{
+		return Masina::numarRoti;
+	}
+
+	char* getMarcaMasina() {
+		return this->marcaMasina;
+	}
+
+	void setNumeMasina(string nume) {
+		if(nume.length()>=3)
+		this->numeMasina = nume;
+	}
+
+	void setCaiPutere(int cai) {
+		if(cai > 0)
+		this->caiPutere = cai;
+	}
+
+	void setNrUsi(int usi) {
+		if(usi>0)
+		this->nrUsi = usi;
+	}
+
+	void setMarcaMasina(char* marcaMasina) {
+		if (strlen(marcaMasina) >= 2)
+		{
+			this->marcaMasina = new char[strlen(marcaMasina) + 1];
+			strcpy_s(this->marcaMasina, strlen(marcaMasina) + 1, marcaMasina);
+		}
+	}
+	
 	Masina() : anFabricatie(2008) {
 		this->numeMasina = "Spark";
 		this->caiPutere = 90;
@@ -26,14 +72,14 @@ public:
 		strcpy_s(this->marcaMasina, strlen("Chevrolet") + 1, "Chevrolet");
 	}
 
-	//constructor2 - cu 4 parametrii
+	
 	Masina(string numeMasinanou, int caiPutereNoi, int anFabricatienou, int nrUsinou): anFabricatie(anFabricatienou), numeMasina(numeMasinanou),caiPutere(caiPutereNoi),nrUsi(nrUsinou)
 	{
 		this->marcaMasina = new char[strlen("Koenigsegg") + 1];
 		strcpy_s(this->marcaMasina, strlen("Koenigsegg") + 1, "Koenigsegg");
 	}
 
-	//constructor3 - cu 3 parametrii
+	
 	Masina(char* marcaMasinaNoua, string numeMasinaNou, const int anFabricatieNou) : numeMasina(numeMasinaNou), anFabricatie(anFabricatieNou)
 	{
 		this->marcaMasina = new char[strlen(marcaMasinaNoua) + 1];
@@ -41,10 +87,28 @@ public:
 
 	}
 
-	//deconstructor
-	~Masina() {
-		if (marcaMasina != NULL)
-			delete[]this->marcaMasina;
+	Masina(const Masina& p) :anFabricatie(p.anFabricatie) {
+		this->numeMasina = p.numeMasina;
+		this->caiPutere = p.caiPutere;
+		this->nrUsi = p.nrUsi;
+		this->marcaMasina = new char[strlen(p.marcaMasina) + 1];
+		strcpy_s(this->marcaMasina, strlen(p.marcaMasina) + 1, p.marcaMasina);
+	}
+
+	Masina operator=(const Masina& p) {
+		if(this != &p)
+		{
+			if (this->marcaMasina != NULL)
+			{
+				delete[]this->marcaMasina;
+			}
+			this->numeMasina = p.numeMasina;
+			this->caiPutere = p.caiPutere;
+			this->nrUsi = p.nrUsi;
+			this->marcaMasina = new char[strlen(p.marcaMasina) + 1];
+			strcpy_s(this->marcaMasina, strlen(p.marcaMasina) + 1, p.marcaMasina);
+		}
+		return *this;
 	}
 
 	void afisare()
@@ -57,19 +121,73 @@ public:
 	static void afisareNumarRoti() {
 		cout << "\nNumar roti:" << numarRoti<<endl;
 	}
-};
 
+	~Masina() {
+		if (marcaMasina != NULL)
+			delete[]this->marcaMasina;
+	}
+
+	friend string getNumeMasina2(Masina a);
+	friend int getCaiPutere2(Masina b);
+
+};
+string getNumeMasina2(Masina a) {
+	if (a.numeMasina == "Spark")
+	{
+		cout << "Masina perfecta este ";
+	}
+	else cout << "Masina imperfecta este ";
+		return a.numeMasina;
+	}
+int getCaiPutere2(Masina b) {
+	if (b.caiPutere != 0) {
+		cout << "Masina are multi cai putere: ";
+	}
+	return b.caiPutere;
+}
 int Masina::numarRoti = 4;
 
 
 class Pilot {
-public:
+private:
 
 	string nume;
 	const string tara;
 	int nrCastiguri;
 	static int varsta;
 	int* aniExperienta;
+
+
+public:
+
+	const string getTara() {
+		return tara;
+	}
+	string getNume(){
+		return nume;
+	}
+	int getNrCastiguri() {
+		return nrCastiguri;
+	}
+	static int getVarsta() {
+		return varsta;
+	}
+	int* getAniExperienta() {
+		return this->aniExperienta;
+	}
+
+	void setNume(string nume) {
+		if (nume.length() >= 2)
+			this->nume = nume;
+	}
+	void setNrCastiguri(int nrCastiguri) {
+		if(nrCastiguri>0)
+		this->nrCastiguri = nrCastiguri;
+	}
+	void setAniExperienta(int* aniExperienta) {
+		if (aniExperienta != NULL)
+			this->aniExperienta = aniExperienta;
+	}
 
 	Pilot() :tara("Romania")
 	{
@@ -90,13 +208,28 @@ public:
 		this->aniExperienta = new int;
 		*aniExperienta = 20;
 	}
-
-	~Pilot()
-	{  
-		if(aniExperienta!=NULL)
-		delete[]this->aniExperienta;
+	
+	Pilot(const Pilot& p) :tara(p.tara) {
+		this->nume = p.nume;
+		this->nrCastiguri = p.nrCastiguri;
+		this->aniExperienta = new int(*p.aniExperienta);
 	}
 
+	Pilot operator=(const Pilot& p) {
+		if (this != &p) {
+			if (this->aniExperienta != NULL)
+			{
+				delete[]this->aniExperienta;
+			}
+			this->nume = p.nume;
+			this->nrCastiguri = p.nrCastiguri;
+			this->aniExperienta = new int(*p.aniExperienta);
+
+		}
+		return *this;
+	}
+
+	
 	void afisare()
 	{
 		cout << "\nPilotul cu numele " << nume << " reprezinta " << tara << " si in doar " << *aniExperienta << " ani de experienta a castigat de " << nrCastiguri<<" ori." << endl;
@@ -108,13 +241,33 @@ public:
 		else cout<< "Soferul nu este eligibil pentru a conduce o masina de curse.\n";
 	}
 
+	~Pilot()
+	{
+		if (aniExperienta != NULL)
+			delete[]this->aniExperienta;
+	}
+
+	friend int getNrCastiguri2(Pilot a);
+	friend string getNume2(Pilot b);
+	
 };
+int getNrCastiguri2(Pilot a) {
+	if (a.nrCastiguri > 10) {
+		cout << "Pilotul experimentat are multe castiguri:";
+	}
+	return a.nrCastiguri;
+}
+string getNume2(Pilot b) {
+	if (b.nume == "Max Verstappen")
+		cout << "Cel mai bun pilot este ";
+	return b.nume;
+}
 
 int Pilot::varsta = 21;
 
 
 class Echipa {
-public:
+private:
 
 	string numeEchipa;
 	int numarMembri;
@@ -122,6 +275,44 @@ public:
 	float* valoareEchipa;
 	const string locatieSediu;
 	static int numarEchipe;
+
+public:
+
+	const string getLocatieSediu() {
+		return locatieSediu;
+	}
+	string getNumeEchipa() {
+		return numeEchipa;
+	}
+	int getNumarMembri(){
+		return numarMembri;
+	}
+	int getNumarSponsori() {
+		return numarSponsori;
+	}
+	float* getValoareEchipa() {
+		return this->valoareEchipa;
+	}
+	static int getNumarEchipe() {
+		return numarEchipe;
+	}
+
+	void setNumeEchipa(string numeEchipa) {
+		if (numeEchipa.length() >= 2)
+			this->numeEchipa = numeEchipa;
+	}
+	void setNumarMembri(int numarMembri) {
+		if (numarMembri > 0)
+			this->numarMembri = numarMembri;
+	}
+	void setNumarSponsori(int numarSponsori) {
+		if (numarSponsori > 0)
+			this->numarSponsori = numarSponsori;
+	}
+	void setValoareEchipa(float* valoareEchipa) {
+		if(valoareEchipa!=NULL)
+			this->valoareEchipa = valoareEchipa;
+	}
 
 	Echipa() :numeEchipa("Redbull"), numarMembri(2), numarSponsori(20),locatieSediu("Germania")
 	{
@@ -143,10 +334,25 @@ public:
 
 	}
 
-	~Echipa()
-	{
-		if (valoareEchipa != NULL)
-			delete[]this->valoareEchipa;
+	Echipa(const Echipa& p) :locatieSediu(p.locatieSediu) {
+		
+			this->numeEchipa = p.numeEchipa;
+			this->numarMembri = p.numarMembri;
+			this->numarSponsori = p.numarSponsori;
+			this->valoareEchipa = new float(*p.valoareEchipa);
+	}
+	
+	Echipa operator=(const Echipa& p) {
+		if (this != &p) {
+			if (this->valoareEchipa != NULL) {
+				delete[]this->valoareEchipa;
+			}
+			this->numeEchipa = p.numeEchipa;
+			this->numarMembri = p.numarMembri;
+			this->numarSponsori = p.numarSponsori;
+			this->valoareEchipa = new float(*p.valoareEchipa);
+		}
+		return *this;
 	}
 
 	void afisare() {
@@ -159,51 +365,182 @@ public:
 		cout << "Numarul total de echipe: " << numarEchipe << endl;
 	}
 
-};
+	~Echipa()
+	{
+		if (valoareEchipa != NULL)
+			delete[]this->valoareEchipa;
+	}
 
+	friend int getNumarMembri2(Echipa a);
+	friend string getNumeEchipa2(Echipa b);
+};
+int getNumarMembri2(Echipa a) {
+	if (a.numarMembri != 0) {
+		cout << "Echipa are destui membri:";
+	}
+	return a.numarMembri;
+}
+string getNumeEchipa2(Echipa b) {
+	if (b.numeEchipa == "Redbull")
+		cout << "Cea mai buna echipa este ";
+	return b.numeEchipa;
+}
 int Echipa::numarEchipe = 12;
 
 
 void main()
-{//apelarea clasei 1
+{
 	Masina masina1;
-	masina1.afisare();
-
+	//masina1.afisare();
+	cout <<  getCaiPutere2(masina1) << endl;
+	cout << getNumeMasina2(masina1) << endl;
+	cout << "\nAn fabricatie: " << masina1.getAnFabricatie() << endl << "Nume masina: " << masina1.getNumeMasina() << endl << "Cai putere: " << masina1.getCaiPutere() << endl << "Marca masina: " << masina1.getMarcaMasina() << endl << "Numar usi:" << masina1.getNrUsi() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+	masina1.setNumeMasina("Bronco");
+	masina1.setCaiPutere(150);
+	masina1.setNrUsi(2);
+	char* marcaMasinaNoua = new char[strlen("Ford") + 1];
+	strcpy_s(marcaMasinaNoua, strlen("Ford") + 1, "Ford");
+	masina1.setMarcaMasina(marcaMasinaNoua);
+	cout << "Masina 1 (dupa modificare):" << endl;
+	cout << "\nAn fabricatie: " << masina1.getAnFabricatie() << endl << "Nume masina: " << masina1.getNumeMasina() << endl << "Cai putere: " << masina1.getCaiPutere() << endl << "Marca masina: " << masina1.getMarcaMasina() << endl << "Numar usi:" << masina1.getNrUsi() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	delete[]marcaMasinaNoua;
+	
 	Masina masina2("Jesko",1280,2022,2);
-	masina2.afisare();
+	//masina2.afisare();
+	cout << getCaiPutere2(masina2) << endl;
+	cout << getNumeMasina2(masina2) << endl;
+	cout << "\nAn fabricatie: " << masina2.getAnFabricatie() << endl << "Nume masina: " << masina2.getNumeMasina() << endl << "Cai putere: " << masina2.getCaiPutere() << endl << "Marca masina: " << masina2.getMarcaMasina() << endl << "Numar usi:" << masina2.getNrUsi() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
 
 	char* marcaMasina = new char[strlen("Ford") + 1];
 	strcpy_s(marcaMasina, strlen("Ford") + 1, "Ford");
 	Masina masina3(marcaMasina, "Mustang", 2023);
-	masina3.afisare();
+	//masina3.afisare();
+	cout << getCaiPutere2(masina3) << endl;
+	cout << getNumeMasina2(masina3) << endl;
+	cout << "\nAn fabricatie: " << masina3.getAnFabricatie() << endl << "Nume masina: " << masina3.getNumeMasina() << endl << "Cai putere: " << masina3.getCaiPutere() << endl << "Marca masina: " << masina3.getMarcaMasina() << endl << "Numar usi:" << masina3.getNrUsi() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	delete[]marcaMasina;
+
+	Masina masina4;
+	masina4 = masina1;
+	//masina4.afisare();
+	cout << getCaiPutere2(masina4) << endl;
+	cout << getNumeMasina2(masina4) << endl;
+	cout << "\nAn fabricatie: " << masina4.getAnFabricatie() << endl << "Nume masina: " << masina4.getNumeMasina() << endl << "Cai putere: " << masina4.getCaiPutere() << endl << "Marca masina: " << masina4.getMarcaMasina() << endl << "Numar usi:" << masina4.getNrUsi() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	Masina masina5 = masina2;
+	//masina5.afisare();
+	cout << getCaiPutere2(masina5) << endl;
+	cout << getNumeMasina2(masina5) << endl;
+	cout << "\nAn fabricatie: " << masina5.getAnFabricatie() << endl << "Nume masina: " << masina5.getNumeMasina() << endl << "Cai putere: " << masina5.getCaiPutere() << endl << "Marca masina: " << masina5.getMarcaMasina() << endl << "Numar usi:" << masina5.getNrUsi() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
 	Masina::afisareNumarRoti();
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
-	//apelarea clasei 2
-
+	
 	Pilot pilot1;
-	pilot1.afisare();
+	//pilot1.afisare();
+	cout << getNrCastiguri2(pilot1) << endl;
+	cout << getNume2(pilot1) << endl;
+	cout << "Pilot 1:\nNume = " << pilot1.getNume() <<endl<< "Tara = " << pilot1.getTara() <<endl<< "Numar castiguri = " << pilot1.getNrCastiguri() <<endl<< "Varsta = " << pilot1.getVarsta() <<endl<<"Ani experienta = "<<*pilot1.getAniExperienta()<< endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	string numeNou = "Stephan";
+	pilot1.setNume(numeNou);
+	pilot1.setNrCastiguri(12);
+	int nouaExperienta = 10;
+	int* Experienta = new int(nouaExperienta);
+	pilot1.setAniExperienta(Experienta);
+	cout << "Pilot 1 (dupa modificare): \n";
+	cout << "Nume = " << pilot1.getNume() << endl << "Tara = " << pilot1.getTara() << endl << "Numar castiguri = " << pilot1.getNrCastiguri() << endl << "Varsta = " << pilot1.getVarsta() << endl << "Ani experienta = " << *pilot1.getAniExperienta() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
 
 	Pilot pilot2("Max Verstappen","Olanda",49);
-	pilot2.afisare();
+	//pilot2.afisare();
+	cout << getNrCastiguri2(pilot2) << endl;
+	cout << getNume2(pilot2) << endl;
+	cout << "Pilot 2:\nNume = " << pilot2.getNume() << endl << "Tara = " << pilot2.getTara() << endl << "Numar castiguri = " << pilot2.getNrCastiguri() << endl << "Varsta = " << pilot2.getVarsta() << endl << "Ani experienta = " << *pilot2.getAniExperienta() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
 	Pilot pilot3("Alonsso","Franta");
-	pilot3.afisare();
+	//pilot3.afisare();
+	cout << getNrCastiguri2(pilot3) << endl;
+	cout << getNume2(pilot3) << endl;
+	cout << "Pilot 3:\nNume = " << pilot3.getNume() << endl << "Tara = " << pilot3.getTara() << endl << "Numar castiguri = " << pilot3.getNrCastiguri() << endl << "Varsta = " << pilot3.getVarsta() << endl << "Ani experienta = " << *pilot3.getAniExperienta() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	Pilot pilot4 = pilot1;
+	//pilot4.afisare();
+	cout << getNrCastiguri2(pilot4) << endl;
+	cout << getNume2(pilot4) << endl;
+	cout << "Pilot 4:\nNume = " << pilot4.getNume() << endl << "Tara = " << pilot4.getTara() << endl << "Numar castiguri = " << pilot4.getNrCastiguri() << endl << "Varsta = " << pilot4.getVarsta() << endl << "Ani experienta = " << *pilot4.getAniExperienta() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	Pilot pilot5;
+	pilot5 = pilot2;
+	//pilot5.afisare();
+	cout << getNrCastiguri2(pilot5) << endl;
+	cout << getNume2(pilot5) << endl;
+	cout << "Pilot 5:\nNume = " << pilot5.getNume() << endl << "Tara = " << pilot5.getTara() << endl << "Numar castiguri = " << pilot5.getNrCastiguri() << endl << "Varsta = " << pilot5.getVarsta() << endl << "Ani experienta = " << *pilot5.getAniExperienta() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
 	Pilot::eligibilitate();
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
-	//apelarea clasei 3
 
 	Echipa echipa1;
-	echipa1.afisare();
+	//echipa1.afisare();
+	cout << getNumeEchipa2(echipa1) << endl;
+	cout << getNumarMembri2(echipa1) << endl;
+	cout << "Echipa 1:\nNume echipa = " << echipa1.getNumeEchipa() <<endl<< "Numar membrii = " << echipa1.getNumarMembri() <<endl<< "Numar sponsori = " << echipa1.getNumarSponsori() <<endl<< "Valoare echipa = " << *echipa1.getValoareEchipa() << " milioane\nLocatie sediu = " << echipa1.getLocatieSediu() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
+	string numeEchipaNou = "Aston Martin";
+	echipa1.setNumeEchipa(numeEchipaNou);
+	echipa1.setNumarMembri(10);
+	echipa1.setNumarSponsori(50);
+	float valoareEchipaNoua = 500.5;
+	float* ptrValoareEchipa = new float(valoareEchipaNoua);
+	echipa1.setValoareEchipa(ptrValoareEchipa);
+	cout << "Echipa 1 (dupa modificare):\n\nNume echipa = " << echipa1.getNumeEchipa() << endl << "Numar membrii = " << echipa1.getNumarMembri() << endl << "Numar sponsori = " << echipa1.getNumarSponsori() << endl << "Valoare echipa = " << *echipa1.getValoareEchipa() << " milioane\nLocatie sediu = " << echipa1.getLocatieSediu() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	
 	Echipa echipa2("Mercedes", 3, 35, 200.2);
-	echipa2.afisare();
+	//echipa2.afisare();
+	cout << getNumeEchipa2(echipa2) << endl;
+	cout << getNumarMembri2(echipa2) << endl;
+	cout << "Echipa 2:\nNume echipa = " << echipa2.getNumeEchipa() << endl << "Numar membrii = " << echipa2.getNumarMembri() << endl << "Numar sponsori = " << echipa2.getNumarSponsori() << endl << "Valoare echipa = " << *echipa2.getValoareEchipa() << " milioane\nLocatie sediu = " << echipa2.getLocatieSediu() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
-	Echipa echipa3("Ferari");
-	echipa3.afisare();
+	Echipa echipa3("Ferrari");
+	//echipa3.afisare();
+	cout << getNumeEchipa2(echipa3) << endl;
+	cout << getNumarMembri2(echipa3) << endl;
+	cout << "Echipa 3:\nNume echipa = " << echipa3.getNumeEchipa() << endl << "Numar membrii = " << echipa3.getNumarMembri() << endl << "Numar sponsori = " << echipa3.getNumarSponsori() << endl << "Valoare echipa = " << *echipa3.getValoareEchipa() << " milioane\nLocatie sediu = " << echipa3.getLocatieSediu() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	Echipa echipa4 = echipa1;
+	//echipa4.afisare();
+	cout << getNumeEchipa2(echipa4) << endl;
+	cout << getNumarMembri2(echipa4) << endl;
+	cout << "Echipa 4:\nNume echipa = " << echipa4.getNumeEchipa() << endl << "Numar membrii = " << echipa4.getNumarMembri() << endl << "Numar sponsori = " << echipa4.getNumarSponsori() << endl << "Valoare echipa = " << *echipa4.getValoareEchipa() << " milioane\nLocatie sediu = " << echipa4.getLocatieSediu() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	Echipa echipa5;
+	echipa5 = echipa2;
+	//echipa5.afisare();
+	cout << getNumeEchipa2(echipa5) << endl;
+	cout << getNumarMembri2(echipa5) << endl;
+	cout << "Echipa 5:\nNume echipa = " << echipa5.getNumeEchipa() << endl << "Numar membrii = " << echipa5.getNumarMembri() << endl << "Numar sponsori = " << echipa5.getNumarSponsori() << endl << "Valoare echipa = " << *echipa5.getValoareEchipa() << " milioane\nLocatie sediu = " << echipa5.getLocatieSediu() << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
 	Echipa::afisareNumarEchipe();
-
 
 }
