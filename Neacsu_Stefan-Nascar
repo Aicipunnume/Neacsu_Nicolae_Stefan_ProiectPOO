@@ -523,10 +523,10 @@ void main()
 	cout << "Operator << :\n";
 	cout << masina1;
 
-	//cout << "Operator >> :\n";
-	//Masina masina6;
-	//cin >> masina6;
-	//cout << masina6;
+	cout << "Operator >> :\n";
+	Masina masina6;
+	cin >> masina6;
+	cout << masina6;
 
 	cout << "Operator [] :\n";
 	cout << masina1[1];
