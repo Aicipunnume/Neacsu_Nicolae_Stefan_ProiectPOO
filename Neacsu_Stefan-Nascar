@@ -3,8 +3,6 @@ using namespace std;
 
 //Domeniul ales este Nascar(curse).Initialele sunt N(Neacsu), S(Stefan). Contine clasele: Masina, Echipa, Pilot.
 
-
-
 class Masina {
 private:
 	const int anFabricatie; 
@@ -16,28 +14,28 @@ private:
 
 public:
 
-	const int getAnFabricatie() {
+	const int getAnFabricatie() const {
 		return this->anFabricatie;
 	}
 
-	string getNumeMasina() {
+	string getNumeMasina() const{
 		return this->numeMasina;
 	}
 
-	int  getCaiPutere() {
+	int  getCaiPutere() const{
 		return this->caiPutere;
 	}
 
-	int getNrUsi() {
+	int getNrUsi() const{
 		return this->nrUsi;
 	}
 
-	static int getNumarRoti()
+	static int getNumarRoti() 
 	{
 		return Masina::numarRoti;
 	}
 
-	char* getMarcaMasina() {
+	char* getMarcaMasina() const{
 		return this->marcaMasina;
 	}
 
@@ -110,6 +108,16 @@ public:
 		}
 		return *this;
 	}
+	char& operator[](int index) {
+		return this->marcaMasina[index];
+	}
+	
+	Masina operator+(const Masina& p) {
+		Masina aux = *this;
+		aux.caiPutere = this->caiPutere + p.caiPutere;
+		aux.nrUsi = this->nrUsi + p.nrUsi;
+		return aux;
+	}
 
 	void afisare()
 	{
@@ -127,6 +135,29 @@ public:
 			delete[]this->marcaMasina;
 	}
 
+	friend ostream& operator<<(ostream& monitor, const Masina& masina) {
+		monitor << "\nAn fabricatie: " << masina.getAnFabricatie() << endl << "Nume masina: " << masina.getNumeMasina() << endl << "Cai putere: " << masina.getCaiPutere() << endl << "Marca masina: " << masina.getMarcaMasina() << endl << "Numar usi:" << masina.getNrUsi() << endl;
+		monitor << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		return monitor;
+	}
+	friend istream& operator>>(istream& tastatura,Masina& masina) {
+		cout <<"Nume masina:";
+		tastatura >> masina.numeMasina;
+		cout << "Cai putere:";
+		tastatura >> masina.caiPutere;
+		cout << "Nr usi:";
+		tastatura >> masina.nrUsi;
+		if(masina.marcaMasina!=NULL)
+		{
+			delete[]masina.marcaMasina;
+		}
+		masina.marcaMasina=new char[strlen(masina.marcaMasina) + 1];
+		cout << "Marca masina:";
+		tastatura >> masina.marcaMasina;
+		return tastatura;
+	}
+
+	
 	friend string getNumeMasina2(Masina a);
 	friend int getCaiPutere2(Masina b);
 
@@ -160,19 +191,19 @@ private:
 
 public:
 
-	const string getTara() {
+	const string getTara() const{
 		return tara;
 	}
-	string getNume(){
+	string getNume() const{
 		return nume;
 	}
-	int getNrCastiguri() {
+	int getNrCastiguri() const{
 		return nrCastiguri;
 	}
 	static int getVarsta() {
 		return varsta;
 	}
-	int* getAniExperienta() {
+	int* getAniExperienta() const{
 		return this->aniExperienta;
 	}
 
@@ -229,7 +260,24 @@ public:
 		return *this;
 	}
 
+	bool operator>(const Pilot& p) {
+		return this->aniExperienta > p.aniExperienta;
+	}
 	
+	Pilot operator++() {
+		++this->nrCastiguri;
+		return *this;
+	}
+	Pilot operator++(int) {
+		Pilot initial = *this;
+		this->nrCastiguri += 10;
+		return initial;
+	}
+
+	bool operator!=(const Pilot& p) {
+		return this->nume != p.nume;
+	}
+
 	void afisare()
 	{
 		cout << "\nPilotul cu numele " << nume << " reprezinta " << tara << " si in doar " << *aniExperienta << " ani de experienta a castigat de " << nrCastiguri<<" ori." << endl;
@@ -246,10 +294,16 @@ public:
 		if (aniExperienta != NULL)
 			delete[]this->aniExperienta;
 	}
+	friend ostream& operator<<(ostream& monitor, const Pilot& pilot) {
+		monitor << "Pilot:\nNume = " << pilot.getNume() << endl << "Tara = " << pilot.getTara() << endl << "Numar castiguri = " << pilot.getNrCastiguri() << endl << "Varsta = " << pilot.getVarsta() << endl << "Ani experienta = " << *pilot.getAniExperienta() << endl;
+		monitor << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		return monitor;
+	}
+
 
 	friend int getNrCastiguri2(Pilot a);
 	friend string getNume2(Pilot b);
-	
+
 };
 int getNrCastiguri2(Pilot a) {
 	if (a.nrCastiguri > 10) {
@@ -278,19 +332,19 @@ private:
 
 public:
 
-	const string getLocatieSediu() {
+	const string getLocatieSediu() const{
 		return locatieSediu;
 	}
-	string getNumeEchipa() {
+	string getNumeEchipa() const{
 		return numeEchipa;
 	}
-	int getNumarMembri(){
+	int getNumarMembri() const{
 		return numarMembri;
 	}
-	int getNumarSponsori() {
+	int getNumarSponsori() const {
 		return numarSponsori;
 	}
-	float* getValoareEchipa() {
+	float* getValoareEchipa() const{
 		return this->valoareEchipa;
 	}
 	static int getNumarEchipe() {
@@ -355,6 +409,23 @@ public:
 		return *this;
 	}
 
+	bool operator&&(const Echipa& a) {
+		if (this->numeEchipa != "NULL" && a.numeEchipa != "NULL")
+			return true;
+	 return false;
+	}
+
+	Echipa operator+=(int plusMembri) {
+		this->numarMembri += plusMembri;
+		return *this;
+	}
+
+	Echipa operator-(const Echipa& echipa) {
+		Echipa aux = *this;
+			if (this->numarSponsori > echipa.numarSponsori)
+			aux.numarSponsori = this->numarSponsori - echipa.numarSponsori;
+		return aux;
+	}
 	void afisare() {
 
 		cout << "\nNume echipa:" << numeEchipa << endl << "Numar membrii:" << numarMembri << endl << "Numar sponsori:" << numarSponsori << endl << "Valoare echipa(milioane):" << *valoareEchipa << endl << "Locatie sediu:" << locatieSediu<<endl;
@@ -373,7 +444,13 @@ public:
 
 	friend int getNumarMembri2(Echipa a);
 	friend string getNumeEchipa2(Echipa b);
+	friend ostream& operator<<(ostream& monitor, const Echipa& echipa);
 };
+ostream& operator<<(ostream& monitor, const Echipa& echipa) {
+	monitor << "Echipa:\nNume echipa = " << echipa.getNumeEchipa() << endl << "Numar membrii = " << echipa.getNumarMembri() << endl << "Numar sponsori = " << echipa.getNumarSponsori() << endl << "Valoare echipa = " << *echipa.getValoareEchipa() << " milioane\nLocatie sediu = " << echipa.getLocatieSediu() << endl;
+	monitor << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	return monitor;
+}
 int getNumarMembri2(Echipa a) {
 	if (a.numarMembri != 0) {
 		cout << "Echipa are destui membri:";
@@ -443,6 +520,22 @@ void main()
 	Masina::afisareNumarRoti();
 	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
+	cout << "Operator << :\n";
+	cout << masina1;
+
+	//cout << "Operator >> :\n";
+	//Masina masina6;
+	//cin >> masina6;
+	//cout << masina6;
+
+	cout << "Operator [] :\n";
+	cout << masina1[1];
+	masina1[1] = 'a';
+	cout << masina1;
+
+	cout << "Operator + :\n";
+	masina2 = masina1 + masina4;
+	cout << masina2;
 	
 	Pilot pilot1;
 	//pilot1.afisare();
@@ -494,6 +587,26 @@ void main()
 	Pilot::eligibilitate();
 	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
+	cout << "Operator post ++\n";
+	pilot1 = pilot2++;
+	cout << "\nPilotul ramane neschimbat:\n" << pilot1;
+	cout << "\nPilotul modificat de post++:\n" << pilot2;
+
+	cout << "Operator pre ++\n";
+	pilot3 = ++pilot2;
+	cout << pilot3;
+
+	cout << "Operator >\n";
+	if (pilot1 > pilot2)
+		cout  << "Pilotul 1 are mai multi ani de experienta decat pilotul 2";
+	else cout << "Pilotul 2 are mai multi ani de experienta decat pilotul 1";
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	cout << "Operator !=\n";
+	if (pilot4 != pilot2)
+		cout << "Pilotii au nume diferite\n";
+	else cout << "Pilotii au nume identice\n";
+	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
 	Echipa echipa1;
 	//echipa1.afisare();
@@ -542,5 +655,19 @@ void main()
 	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
 	Echipa::afisareNumarEchipe();
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	cout << "Operatorul &&\n";
+	if (echipa1 && echipa2)
+		cout << "Ambele echipe au denumire";
+	else cout << "Minim o echipa nu are denumire";
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	echipa2 += 5;
+	cout <<"Operatorul +=\n" << echipa2;
+
+	cout << "Operatorul -\n";
+	echipa1 = echipa3 - echipa2;
+	cout << echipa1;
 
 }
