@@ -148,14 +148,14 @@ public:
 		cout << "Nr usi:";
 		tastatura >> masina.nrUsi;
 		char aux[100];
+		cout << "Introduceti marca masina:";
 		tastatura >> aux;
 		if (masina.marcaMasina != NULL)
 		{
 			delete[]masina.marcaMasina;
 		}
 		masina.marcaMasina = new char[strlen(aux) + 1];
-		cout << "Marca masina:";
-		tastatura >> masina.marcaMasina;
+		strcpy_s(masina.marcaMasina, strlen(aux) + 1, aux);
 		return tastatura;
 	}
 
@@ -305,8 +305,21 @@ public:
 
 	friend int getNrCastiguri2(Pilot a);
 	friend string getNume2(Pilot b);
-
-};
+	friend istream& operator>>(istream& tastatura, Pilot& pilot) {
+			cout << "Pilot:\nNume = ";
+			tastatura >> pilot.nume;
+			cout << "Nr castiguri = ";
+			tastatura >> pilot.nrCastiguri;
+			int aux;
+			cout << "Ani experienta = ";
+			tastatura >> aux;
+			if (pilot.aniExperienta != NULL)
+				delete pilot.aniExperienta;
+			pilot.aniExperienta = new int;
+			*pilot.aniExperienta = aux;
+			return tastatura;
+	}
+	};
 int getNrCastiguri2(Pilot a) {
 	if (a.nrCastiguri > 10) {
 		cout << "Pilotul experimentat are multe castiguri:";
@@ -443,10 +456,25 @@ public:
 		if (valoareEchipa != NULL)
 			delete[]this->valoareEchipa;
 	}
-
 	friend int getNumarMembri2(Echipa a);
 	friend string getNumeEchipa2(Echipa b);
 	friend ostream& operator<<(ostream& monitor, const Echipa& echipa);
+	friend istream& operator>>(istream& tastatura, Echipa& echipa)
+	{
+		cout << "Nume echipa = ";
+		tastatura >> echipa.numeEchipa;
+		cout << "Numar membri =";
+		tastatura >> echipa.numarMembri;
+		cout << "Numar sponsori =";
+		tastatura >> echipa.numarSponsori;
+		float aux;
+		tastatura >> aux;
+		if (echipa.valoareEchipa != NULL)
+			delete echipa.valoareEchipa;
+		echipa.valoareEchipa = new float;
+		*echipa.valoareEchipa = aux;
+		return tastatura;
+	}
 };
 ostream& operator<<(ostream& monitor, const Echipa& echipa) {
 	monitor << "Echipa:\nNume echipa = " << echipa.getNumeEchipa() << endl << "Numar membrii = " << echipa.getNumarMembri() << endl << "Numar sponsori = " << echipa.getNumarSponsori() << endl << "Valoare echipa = " << *echipa.getValoareEchipa() << " milioane\nLocatie sediu = " << echipa.getLocatieSediu() << endl;
@@ -539,6 +567,41 @@ void main()
 	masina2 = masina1 + masina4;
 	cout << masina2;
 
+	Masina* v_masina = new Masina[4];
+	int lungime_vector=4;
+	for (int i = 0; i < lungime_vector; i++)
+	{
+		cout << "Masina " << i+1 << ":\n";
+		cin >> v_masina[i];
+		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	}
+	for (int i = 0; i < lungime_vector; i++)
+	{
+		cout << v_masina[i];
+		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	}
+	delete[]v_masina;
+
+	int linii = 2, coloane = 2;
+	Masina** m_masina = new Masina*[linii];
+	for (int i = 0; i < linii; i++)
+		m_masina[i] = new Masina[coloane];
+
+	for(int i=0;i<linii;i++)
+		for (int j = 0; j < coloane; j++)
+		{
+			cout << "\nCitire masina de pe linia " << i+1 << " si coloana " << j+1 << endl;
+			cin >> m_masina[i][j];
+		}
+	for (int i = 0; i < linii; i++)
+		for (int j = 0; j < coloane; j++)
+		{
+			cout << "Afisare masina de pe linia " << i+1 << " si coloana " << j+1 << endl;
+			cout<< m_masina[i][j];
+		}
+	for (int i = 0; i < linii; i++)
+		delete[]m_masina[i];
+	delete[]m_masina;
 	Pilot pilot1;
 	//pilot1.afisare();
 	cout << getNrCastiguri2(pilot1) << endl;
@@ -608,7 +671,19 @@ void main()
 	if (pilot4 != pilot2)
 		cout << "Pilotii au nume diferite\n";
 	else cout << "Pilotii au nume identice\n";
-	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+	Pilot* v_pilot = new Pilot[4];
+	int lungime_vector2 = 4;
+	for (int i = 0; i < lungime_vector2; i++) {
+		cin >> v_pilot[i];
+		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	}
+	for (int i = 0; i < lungime_vector2; i++) {
+		cout << v_pilot[i];
+		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	}
+	delete[]v_pilot;
 
 	Echipa echipa1;
 	//echipa1.afisare();
@@ -671,5 +746,16 @@ void main()
 	cout << "Operatorul -\n";
 	echipa1 = echipa3 - echipa2;
 	cout << echipa1;
-
+	
+	Echipa* v_echipa = new Echipa[3];
+	int lungime_vector3 = 3;
+	for (int i = 0; i < lungime_vector3; i++) {
+		cin >> v_echipa[i];
+		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	}
+	for (int i = 0; i < lungime_vector3; i++) {
+		cout << v_echipa[i];
+		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	}
+	delete[]v_echipa;
 }
