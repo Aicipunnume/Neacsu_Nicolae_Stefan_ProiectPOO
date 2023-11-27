@@ -180,6 +180,65 @@ int getCaiPutere2(Masina b) {
 }
 int Masina::numarRoti = 4;
 
+class Garaj {
+private:
+	int nrMasini;
+	Masina* masina;
+	float valoareMasini;
+public:
+	Garaj() {
+		this->nrMasini = 0;
+		this->masina = NULL;
+		this->valoareMasini = 0;
+	}
+	Garaj(int nrNou) {
+		this->nrMasini = nrNou;
+		this->masina = new Masina[nrMasini];
+		this->valoareMasini = nrNou*50000;
+	}
+	~Garaj() {
+		if (this->masina != NULL)
+			delete[]masina;
+	}
+	friend ostream& operator<<(ostream& monitor, const Garaj& p) {
+		monitor << "\nNr masini:" << p.nrMasini;
+		for (int i = 0; i < p.nrMasini; i++)
+			monitor << endl << p.masina[i];
+		monitor << "\nValoare masini:" << p.valoareMasini<<endl;
+		monitor << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+		return monitor;
+	}
+	Masina& operator[](int index) {
+		if (index== 0)
+			return this->masina[index];
+	}
+
+	int getNrMasini()const {
+		return this->nrMasini;
+	}
+	Masina* getMasini() {
+		return this->masina;
+	}
+	int getValoareMasini()const {
+		return this->valoareMasini;
+	}
+	void setMasini(int nrNou, Masina* masiniNoi) {
+		this->nrMasini = nrNou;
+		if (this->masina != NULL)
+			delete[]this->masina;
+		this->masina = new Masina[nrNou];
+		for (int i = 0; i < nrNou; i++)
+			this->masina[i] = masiniNoi[i];
+	}
+	void setValoareNoua(int valoareNoua) {
+		this->valoareMasini = this->nrMasini * valoareNoua;
+	}
+
+	bool operator>(int valoareMedie) {
+		return this->valoareMasini / this->nrMasini > valoareMedie;
+	}
+};
+
 
 class Pilot {
 private:
@@ -758,4 +817,13 @@ void main()
 		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 	}
 	delete[]v_echipa;
+
+	Garaj g1;
+	cout << g1;
+	Garaj g2(2);
+	cout << g2;
+	cout << g2.getNrMasini()<<endl<<g2.getValoareMasini();
+	cout << *g2.getMasini();
+	if (g2 > 5000)
+		cout << "Valoarea masinilor din garaj este mai mare decat media\n";
 }
