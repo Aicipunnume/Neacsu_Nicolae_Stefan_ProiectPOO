@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 //Domeniul ales este Nascar(curse).Initialele sunt N(Neacsu), S(Stefan). Contine clasele: Masina, Echipa, Pilot.
@@ -159,6 +160,25 @@ public:
 		return tastatura;
 	}
 
+	friend ofstream& operator<<(ofstream& fisier, const Masina& p) {
+		fisier << p.getNumeMasina()<<endl;
+		fisier << p.getCaiPutere() << endl;
+		fisier << p.getNrUsi() << endl;
+		fisier << p.getMarcaMasina() << endl;
+		return fisier;
+	}
+	friend ifstream& operator>>(ifstream& mouse, Masina& p) {
+		mouse >> p.numeMasina;
+		mouse >> p.caiPutere;
+		mouse >> p.nrUsi;
+		if (p.marcaMasina != NULL)
+			delete[]p.marcaMasina;
+		char a[30] = {};
+		mouse >> a;
+		p.marcaMasina = new char [strlen(a) + 1];
+		strcpy_s(p.marcaMasina, strlen(a) + 1, a);
+		return mouse;
+	}
 
 	friend string getNumeMasina2(Masina a);
 	friend int getCaiPutere2(Masina b);
@@ -360,24 +380,40 @@ public:
 		monitor << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 		return monitor;
 	}
-
-
+	friend istream& operator>>(istream& tastatura, Pilot& pilot) {
+		cout << "Pilot:\nNume = ";
+		tastatura >> pilot.nume;
+		cout << "Nr castiguri = ";
+		tastatura >> pilot.nrCastiguri;
+		int aux;
+		cout << "Ani experienta = ";
+		tastatura >> aux;
+		if (pilot.aniExperienta != NULL)
+			delete pilot.aniExperienta;
+		pilot.aniExperienta = new int;
+		*pilot.aniExperienta = aux;
+		return tastatura;
+	}
+	friend ofstream& operator<<(ofstream& fisier, const Pilot& p) {
+		fisier << p.getNume() << endl;
+		fisier << p.getNrCastiguri() << endl;
+		fisier << *p.getAniExperienta() << endl;
+		return fisier;
+	}
+	friend ifstream& operator>>(ifstream& mouse, Pilot& p) {
+		mouse >> p.nume;
+		mouse >> p.nrCastiguri;
+		if (p.aniExperienta != NULL)
+			delete p.aniExperienta;
+		int a = 0;
+		mouse >> a;
+		p.aniExperienta = new int;
+		*p.aniExperienta = a;
+		return mouse;
+	}
 	friend int getNrCastiguri2(Pilot a);
 	friend string getNume2(Pilot b);
-	friend istream& operator>>(istream& tastatura, Pilot& pilot) {
-			cout << "Pilot:\nNume = ";
-			tastatura >> pilot.nume;
-			cout << "Nr castiguri = ";
-			tastatura >> pilot.nrCastiguri;
-			int aux;
-			cout << "Ani experienta = ";
-			tastatura >> aux;
-			if (pilot.aniExperienta != NULL)
-				delete pilot.aniExperienta;
-			pilot.aniExperienta = new int;
-			*pilot.aniExperienta = aux;
-			return tastatura;
-	}
+	
 	};
 int getNrCastiguri2(Pilot a) {
 	if (a.nrCastiguri > 10) {
@@ -612,10 +648,10 @@ void main()
 	cout << "Operator << :\n";
 	cout << masina1;
 
-	cout << "Operator >> :\n";
+	/*cout << "Operator >> :\n";
 	Masina masina6;
 	cin >> masina6;
-	cout << masina6;
+	cout << masina6;*/
 
 	cout << "Operator [] :\n";
 	cout << masina1[1];
@@ -817,7 +853,8 @@ void main()
 		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 	}
 	delete[]v_echipa;
-
+	
+	//clasa 4 cu has-a
 	Garaj g1;
 	cout << g1;
 	Garaj g2(2);
@@ -826,4 +863,34 @@ void main()
 	cout << *g2.getMasini();
 	if (g2 > 5000)
 		cout << "Valoarea masinilor din garaj este mai mare decat media\n";
+
+	//citire 
+	ofstream g("Masina.txt", ios::app);
+	g << masina1;
+	g.close();
+	//scriere
+	ifstream f("Masina.txt", ios::in);
+	f >> masina5;
+	cout << masina5;
+	f.close();
+	
+
+	ofstream l("Pilot.txt", ios::app);
+	l << pilot1;
+	l.close();
+	ifstream f1("Pilot.txt", ios::in);
+	f1 >> pilot2;
+	cout << pilot2;
+	f1.close();
+
+Masina m1;
+fstream x("Masina.bin", ios::out | ios::binary);
+x.write((char*)&m1,sizeof(Masina));
+x.close();
+
+fstream f2("Masina.bin", ios::binary | ios::in);
+f2.read((char*)&m1, sizeof(Masina));
+f2.close();
+cout << endl;
 }
+
