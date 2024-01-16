@@ -4,7 +4,18 @@ using namespace std;
 
 //Domeniul ales este Nascar(curse).Initialele sunt N(Neacsu), S(Stefan). Contine clasele: Masina, Echipa, Pilot.
 
-class Masina {
+class Motor {
+public:
+	virtual void afisareDetaliiMotor() const = 0;
+	virtual ~Motor() {}
+};
+
+class Formula2 {
+public:
+	virtual void afisareCastiguri() = 0;
+};
+
+class Masina: public Motor {
 private:
 	const int anFabricatie;
 	string numeMasina;
@@ -12,9 +23,13 @@ private:
 	int nrUsi;
 	static int numarRoti;
 	char* marcaMasina;
-
+	string tipMotor;
+	Motor* motor;
 public:
-
+	
+	void afisareDetaliiMotor() const override{
+		cout << "Motorul este un "<<tipMotor<< endl;
+	}
 	const int getAnFabricatie() const {
 		return this->anFabricatie;
 	}
@@ -64,6 +79,7 @@ public:
 	}
 
 	Masina() : anFabricatie(2008) {
+		this->tipMotor = "V8";
 		this->numeMasina = "Spark";
 		this->caiPutere = 90;
 		this->nrUsi = 4;
@@ -203,52 +219,81 @@ int Masina::numarRoti = 4;
 class Garaj {
 private:
 	int nrMasini;
-	Masina* masina;
+	//Masina* masina;
 	float valoareMasini;
+	Motor** masini;
 public:
+	void afisareMotor()const {
+
+	}
 	Garaj() {
 		this->nrMasini = 0;
-		this->masina = NULL;
-		this->valoareMasini = 0;
+		this->masini = NULL;
+		//this->valoareMasini = 0;
 	}
 	Garaj(int nrNou) {
 		this->nrMasini = nrNou;
-		this->masina = new Masina[nrMasini];
-		this->valoareMasini = nrNou*50000;
+		this->masini = new Motor * [nrMasini];
+		for (int i = 0; i < nrMasini; ++i) {
+			masini[i] = new Masina();
+		}
+		//this->valoareMasini = nrNou*50000;
 	}
 	~Garaj() {
-		if (this->masina != NULL)
-			delete[]masina;
+		if (this->masini != NULL)
+			delete[]masini;
 	}
 	friend ostream& operator<<(ostream& monitor, const Garaj& p) {
 		monitor << "\nNr masini:" << p.nrMasini;
-		for (int i = 0; i < p.nrMasini; i++)
-			monitor << endl << p.masina[i];
-		monitor << "\nValoare masini:" << p.valoareMasini<<endl;
+		for (int i = 0; i < p.nrMasini; i++) {
+			monitor << endl;
+			p.masini[i]->afisareDetaliiMotor();
+		}
+		monitor << "\nValoare masini:" << p.getValoareMasini() << endl;
 		monitor << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
 		return monitor;
 	}
-	Masina& operator[](int index) {
-		if (index== 0)
-			return this->masina[index];
+	Garaj(const Garaj & p){
+	if(this!= &p)
+		this->nrMasini = p.nrMasini;
+	this->masini = new Motor * [p.nrMasini];
+	for (int i = 0; i < p.nrMasini; ++i) {
+		masini[i] = p.masini[i];
+	}
+	}
+	Garaj operator=(const Garaj& p) {
+		if (this != &p)
+			this->nrMasini = p.nrMasini;
+		this->masini = new Motor * [p.nrMasini];
+		for (int i = 0; i < p.nrMasini; ++i) {
+			masini[i] = p.masini[i];
+		}
+		return *this;
+	}
+
+		Motor*& operator[](int index) {
+		if (index<15)
+			return masini[index];
 	}
 
 	int getNrMasini()const {
 		return this->nrMasini;
 	}
-	Masina* getMasini() {
-		return this->masina;
+	Motor** getMotoare() {
+		return masini;
 	}
 	int getValoareMasini()const {
 		return this->valoareMasini;
 	}
-	void setMasini(int nrNou, Masina* masiniNoi) {
-		this->nrMasini = nrNou;
-		if (this->masina != NULL)
-			delete[]this->masina;
-		this->masina = new Masina[nrNou];
-		for (int i = 0; i < nrNou; i++)
-			this->masina[i] = masiniNoi[i];
+	void setMotoare(int nrNou, Motor** motoareNoi) {
+		if (masini != nullptr) {
+			delete[] masini;
+		}
+		nrMasini = nrNou;
+		masini = new Motor * [nrMasini];
+		for (int i = 0; i < nrMasini; i++) {
+			masini[i] = new Masina();
+		}
 	}
 	void setValoareNoua(int valoareNoua) {
 		this->valoareMasini = this->nrMasini * valoareNoua;
@@ -260,7 +305,7 @@ public:
 };
 
 
-class Pilot {
+class Pilot: public Formula2 {
 private:
 
 	string nume;
@@ -271,6 +316,10 @@ private:
 
 
 public:
+
+	void afisareCastiguri() {
+		cout << "Minimul de castiguri pentru a ajunge in F1 este: " << this->nrCastiguri<<endl;
+	}
 
 	const string getTara() const {
 		return tara;
@@ -696,8 +745,8 @@ public:
 void main()
 {
 	Masina masina1;
-	//masina1.afisare();
-	cout << getCaiPutere2(masina1) << endl;
+//	//masina1.afisare();
+ 	cout << getCaiPutere2(masina1) << endl;
 	cout << getNumeMasina2(masina1) << endl;
 	cout << "\nAn fabricatie: " << masina1.getAnFabricatie() << endl << "Nume masina: " << masina1.getNumeMasina() << endl << "Cai putere: " << masina1.getCaiPutere() << endl << "Marca masina: " << masina1.getMarcaMasina() << endl << "Numar usi:" << masina1.getNrUsi() << endl;
 	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
@@ -751,10 +800,10 @@ void main()
 	cout << "Operator << :\n";
 	cout << masina1;
 
-	cout << "Operator >> :\n";
+	/*cout << "Operator >> :\n";
 	Masina masina6;
 	cin >> masina6;
-	cout << masina6
+	cout << masina6;*/
 
 	cout << "Operator [] :\n";
 	cout << masina1[1];
@@ -765,41 +814,41 @@ void main()
 	masina2 = masina1 + masina4;
 	cout << masina2;
 
-	Masina* v_masina = new Masina[4];
-	int lungime_vector=4;
-	for (int i = 0; i < lungime_vector; i++)
-	{
-		cout << "Masina " << i+1 << ":\n";
-		cin >> v_masina[i];
-		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	}
-	for (int i = 0; i < lungime_vector; i++)
-	{
-		cout << v_masina[i];
-		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	}
-	delete[]v_masina;
-
-	int linii = 2, coloane = 2;
-	Masina** m_masina = new Masina*[linii];
-	for (int i = 0; i < linii; i++)
-		m_masina[i] = new Masina[coloane];
-
-	for(int i=0;i<linii;i++)
-		for (int j = 0; j < coloane; j++)
-		{
-			cout << "\nCitire masina de pe linia " << i+1 << " si coloana " << j+1 << endl;
-			cin >> m_masina[i][j];
-		}
-	for (int i = 0; i < linii; i++)
-		for (int j = 0; j < coloane; j++)
-		{
-			cout << "Afisare masina de pe linia " << i+1 << " si coloana " << j+1 << endl;
-			cout<< m_masina[i][j];
-		}
-	for (int i = 0; i < linii; i++)
-		delete[]m_masina[i];
-	delete[]m_masina;
+//	Masina* v_masina = new Masina[4];
+//	int lungime_vector=4;
+//	for (int i = 0; i < lungime_vector; i++)
+//	{
+//		cout << "Masina " << i+1 << ":\n";
+//		cin >> v_masina[i];
+//		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+//	}
+//	for (int i = 0; i < lungime_vector; i++)
+//	{
+//		cout << v_masina[i];
+//		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+//	}
+//	delete[]v_masina;
+//
+//	int linii = 2, coloane = 2;
+//	Masina** m_masina = new Masina*[linii];
+//	for (int i = 0; i < linii; i++)
+//		m_masina[i] = new Masina[coloane];
+//
+//	for(int i=0;i<linii;i++)
+//		for (int j = 0; j < coloane; j++)
+//		{
+//			cout << "\nCitire masina de pe linia " << i+1 << " si coloana " << j+1 << endl;
+//			cin >> m_masina[i][j];
+//		}
+//	for (int i = 0; i < linii; i++)
+//		for (int j = 0; j < coloane; j++)
+//		{
+//			cout << "Afisare masina de pe linia " << i+1 << " si coloana " << j+1 << endl;
+//			cout<< m_masina[i][j];
+//		}
+//	for (int i = 0; i < linii; i++)
+//		delete[]m_masina[i];
+//	delete[]m_masina;
 	Pilot pilot1;
 	//pilot1.afisare();
 	cout << getNrCastiguri2(pilot1) << endl;
@@ -871,18 +920,18 @@ void main()
 	else cout << "Pilotii au nume identice\n";
 	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
-	Pilot* v_pilot = new Pilot[4];
-	int lungime_vector2 = 4;
-	for (int i = 0; i < lungime_vector2; i++) {
-		cin >> v_pilot[i];
-		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	}
-	for (int i = 0; i < lungime_vector2; i++) {
-		cout << v_pilot[i];
-		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	}
-	delete[]v_pilot;
-
+//	Pilot* v_pilot = new Pilot[4];
+//	int lungime_vector2 = 4;
+//	for (int i = 0; i < lungime_vector2; i++) {
+//		cin >> v_pilot[i];
+//		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+//	}
+//	for (int i = 0; i < lungime_vector2; i++) {
+//		cout << v_pilot[i];
+//		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+//	}
+//	delete[]v_pilot;
+//
 	Echipa echipa1;
 	//echipa1.afisare();
 	cout << getNumeEchipa2(echipa1) << endl;
@@ -945,56 +994,57 @@ void main()
 	echipa1 = echipa3 - echipa2;
 	cout << echipa1;
 	
-	Echipa* v_echipa = new Echipa[3];
-	int lungime_vector3 = 3;
-	for (int i = 0; i < lungime_vector3; i++) {
-		cin >> v_echipa[i];
-		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	}
-	for (int i = 0; i < lungime_vector3; i++) {
-		cout << v_echipa[i];
-		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	}
-	delete[]v_echipa;
-	
-	//clasa 4 cu has-a
+//	Echipa* v_echipa = new Echipa[3];
+//	int lungime_vector3 = 3;
+//	for (int i = 0; i < lungime_vector3; i++) {
+//		cin >> v_echipa[i];
+//		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+//	}
+//	for (int i = 0; i < lungime_vector3; i++) {
+//		cout << v_echipa[i];
+//		cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+//	}
+//	delete[]v_echipa;
+//	
+//	//clasa 4 cu has-a
 	Garaj g1;
 	cout << g1;
 	Garaj g2(2);
 	cout << g2;
 	cout << g2.getNrMasini()<<endl<<g2.getValoareMasini();
-	cout << *g2.getMasini();
+	//cout << *g2.getMasini();
 	if (g2 > 5000)
-		cout << "Valoarea masinilor din garaj este mai mare decat media\n";
+		cout << "\nValoarea masinilor din garaj este mai mare decat media\n";
+	else cout << "Valoarea masinilor din garaj este mai mica decat media\n";
 
-	//citire 
-	ofstream g("Masina.txt", ios::app);
-	g << masina1;
-	g.close();
-	//scriere
-	ifstream f("Masina.txt", ios::in);
-	f >> masina5;
-	cout << masina5;
-	f.close();
-	
-
-	ofstream l("Pilot.txt", ios::app);
-	l << pilot1;
-	l.close();
-	ifstream f1("Pilot.txt", ios::in);
-	f1 >> pilot2;
-	cout << pilot2;
-	f1.close();
-
-Masina m1;
-fstream x("Masina.bin", ios::out | ios::binary);
-x.write((char*)&m1,sizeof(Masina));
-x.close();
-
-fstream f2("Masina.bin", ios::binary | ios::in);
-f2.read((char*)&m1, sizeof(Masina));
-f2.close();
-cout << endl;
+//	//citire 
+//	ofstream g("Masina.txt", ios::app);
+//	g << masina1;
+//	g.close();
+//	//scriere
+//	ifstream f("Masina.txt", ios::in);
+//	f >> masina5;
+//	cout << masina5;
+//	f.close();
+//	
+//
+//	ofstream l("Pilot.txt", ios::app);
+//	l << pilot1;
+//	l.close();
+//	ifstream f1("Pilot.txt", ios::in);
+//	f1 >> pilot2;
+//	cout << pilot2;
+//	f1.close();
+//
+//Masina m1;
+//fstream x("Masina.bin", ios::out | ios::binary);
+//x.write((char*)&m1,sizeof(Masina));
+//x.close();
+//
+//fstream f2("Masina.bin", ios::binary | ios::in);
+//f2.read((char*)&m1, sizeof(Masina));
+//f2.close();
+//cout << endl;
 
 MasiniDeColectie c1;
 cout << c1;
@@ -1012,5 +1062,15 @@ PilotPredecesor v3("Vali", 57, 28);
 cout << v3;
 v3 = v2;
 cout << v2;
+
+//Motor* a = NULL;
+//a = new Masina();
+//
+//
+//Garaj garaj;
+//garaj[0] = a;
+//cout << garaj[0];
+//delete garaj[0];
+//garaj[2] = new Garaj(2);
 }
 
